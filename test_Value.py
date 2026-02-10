@@ -1,4 +1,5 @@
 from Value import Value
+import math
 
 def test_data():
     val = Value(8)
@@ -45,5 +46,54 @@ def test_backward_single():
     val1 = Value(4)
     val2 = Value(5)
     prod = val1*val2
-    prod._backward()
+    prod.backward()
     assert val2.grad == 4*1
+
+def test_sub():
+    val1 = Value(4)
+    val2 = Value(5)
+    sub = val1 - val2
+    assert sub.data == -1
+
+def test_sigmoid():
+    val1 = Value(4)
+    sig_val = val1.sigmoid()
+    sig_manual = 1/(1+math.exp(-4))
+    assert sig_val.data == sig_manual
+
+def test_sigmoid_backprop():
+    val1 = Value(4)
+    sig_val = val1.sigmoid()
+    sig_manual = 1/(1+math.exp(-4))
+    sig_val.backward()
+    sig_grad = sig_manual * (1-sig_manual)
+    assert val1.grad == sig_grad
+
+def test_tanh():
+    val1 = Value(4)
+    tanh_val = val1.tanh()
+    sig_manual = (math.exp(2*4)-1)/(math.exp(2*4)+1)
+    assert tanh_val.data == sig_manual
+
+def test_tanh_backprop():
+    val1 = Value(4)
+    tanh_val = val1.tanh()
+    tanh_manual = (math.exp(2*4)-1)/(math.exp(2*4)+1)
+    tanh_val.backward()
+    tanh_grad = 1 - tanh_manual**2
+    assert val1.grad == tanh_grad
+
+def test_relu():
+    val1 = Value(4)
+    relu_val = val1.ReLU()
+    relu_val.backward()
+    assert relu_val.data == 4
+    assert val1.grad == 1
+
+def test_negative_ReLU():
+    val1 = Value(-4)
+    relu_val = val1.ReLU()
+    relu_val.backward()
+    print(relu_val, val1)
+    assert relu_val.data == 0
+    assert val1.grad == 0
