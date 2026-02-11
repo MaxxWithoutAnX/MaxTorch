@@ -13,9 +13,8 @@
 import math
 
 class Value():
-    def __init__(self, data, _op="", _children = None):
+    def __init__(self, data, _children = None):
         self.data = data
-        self._op = _op
         self.grad = 0.0
         self._children = _children if _children is not None else set()
         self._backward = lambda: None
@@ -25,7 +24,7 @@ class Value():
     
     def __add__(self, other):
         other = other if isinstance(other, Value) else Value(other)
-        out = Value(self.data + other.data, _op = "+", _children = {self, other})
+        out = Value(self.data + other.data, _children = {self, other})
 
         def _backward():
             self.grad += out.grad
@@ -39,7 +38,7 @@ class Value():
     
     def __mul__(self, other):
         other = other if isinstance(other, Value) else Value(other)
-        out = Value(self.data * other.data, _op = "*", _children = {self, other})
+        out = Value(self.data * other.data, _children = {self, other})
 
         def _backward():
             self.grad += out.grad * other.data
@@ -93,7 +92,7 @@ class Value():
         return out
     
     def tanh(self):
-        out = (math.exp(2*self.data)-1)/(math.exp(2*self.data)+1)
+        out = math.tanh(self.data)
         out = Value(out, _children = {self})
 
         def _backward():
