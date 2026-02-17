@@ -3,7 +3,7 @@ import random
 
 class Neuron():
     def __init__(self, nin):
-        self.w = [Value(random.random()) for _ in range(nin)]
+        self.w = [Value(random.uniform(-1, 1)) for _ in range(nin)]
         self.b = Value(0)
     
     def __call__(self, x, act = "tanh"):
@@ -70,7 +70,7 @@ if __name__ == "__main__":
 
     model = MLP(3, [4, 4, 1], act="tanh")
     loss_fn = Loss()
-    lr = 0.01
+    lr = 0.001
 
     for epoch in range(100):
         total_loss = Value(0)
@@ -87,4 +87,4 @@ if __name__ == "__main__":
         if epoch % 10 == 0:
             print(f"Epoch: {epoch}, Loss: {total_loss.data}")
     
-    print(f"Input: [-1, -2, -3]: ground truth: {ys[1]}, model prediction: {model([-1, -2, -3])[0].data}")
+    print(f"Input: [1, 2, 3]: ground truth: {ys[0]}, model prediction: {model([1, 2, 3])[0].data}")

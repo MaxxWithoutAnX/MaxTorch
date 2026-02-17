@@ -106,9 +106,7 @@ class Value():
 
         def _backward():
             if out.data > 0:
-                self.grad += 1 * out.grad
-            else:
-                self.grad = 0
+                self.grad += out.grad
         out._backward = _backward
         return out
     
